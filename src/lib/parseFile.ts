@@ -1,9 +1,7 @@
 // Browser-side parsers for PDF/DOCX uploads.
 
 export async function parsePdf(file: File): Promise<string> {
-  const pdfjs = await import("pdfjs-dist");
-  // Use a CDN worker to avoid bundling a separate worker entry.
-  // @ts-expect-error - workerSrc exists on GlobalWorkerOptions
+  const pdfjs: any = await import("pdfjs-dist");
   pdfjs.GlobalWorkerOptions.workerSrc = `https://cdn.jsdelivr.net/npm/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
   const buf = await file.arrayBuffer();
   const doc = await pdfjs.getDocument({ data: buf }).promise;
@@ -17,9 +15,9 @@ export async function parsePdf(file: File): Promise<string> {
 }
 
 export async function parseDocx(file: File): Promise<string> {
-  const mammoth = await import("mammoth/mammoth.browser");
+  const mammoth: any = await import("mammoth/mammoth.browser" as any);
   const buf = await file.arrayBuffer();
-  const result = await (mammoth as any).extractRawText({ arrayBuffer: buf });
+  const result = await mammoth.extractRawText({ arrayBuffer: buf });
   return (result.value as string).trim();
 }
 
