@@ -9,38 +9,146 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as QuizzesRouteImport } from './routes/quizzes'
+import { Route as LecturesRouteImport } from './routes/lectures'
+import { Route as AttendanceRouteImport } from './routes/attendance'
+import { Route as AnalyticsRouteImport } from './routes/analytics'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as QuizzesQuizIdRouteImport } from './routes/quizzes.$quizId'
+import { Route as LecturesLectureIdRouteImport } from './routes/lectures.$lectureId'
 
+const QuizzesRoute = QuizzesRouteImport.update({
+  id: '/quizzes',
+  path: '/quizzes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LecturesRoute = LecturesRouteImport.update({
+  id: '/lectures',
+  path: '/lectures',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AttendanceRoute = AttendanceRouteImport.update({
+  id: '/attendance',
+  path: '/attendance',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AnalyticsRoute = AnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const QuizzesQuizIdRoute = QuizzesQuizIdRouteImport.update({
+  id: '/$quizId',
+  path: '/$quizId',
+  getParentRoute: () => QuizzesRoute,
+} as any)
+const LecturesLectureIdRoute = LecturesLectureIdRouteImport.update({
+  id: '/$lectureId',
+  path: '/$lectureId',
+  getParentRoute: () => LecturesRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/analytics': typeof AnalyticsRoute
+  '/attendance': typeof AttendanceRoute
+  '/lectures': typeof LecturesRouteWithChildren
+  '/quizzes': typeof QuizzesRouteWithChildren
+  '/lectures/$lectureId': typeof LecturesLectureIdRoute
+  '/quizzes/$quizId': typeof QuizzesQuizIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/analytics': typeof AnalyticsRoute
+  '/attendance': typeof AttendanceRoute
+  '/lectures': typeof LecturesRouteWithChildren
+  '/quizzes': typeof QuizzesRouteWithChildren
+  '/lectures/$lectureId': typeof LecturesLectureIdRoute
+  '/quizzes/$quizId': typeof QuizzesQuizIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/analytics': typeof AnalyticsRoute
+  '/attendance': typeof AttendanceRoute
+  '/lectures': typeof LecturesRouteWithChildren
+  '/quizzes': typeof QuizzesRouteWithChildren
+  '/lectures/$lectureId': typeof LecturesLectureIdRoute
+  '/quizzes/$quizId': typeof QuizzesQuizIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/analytics'
+    | '/attendance'
+    | '/lectures'
+    | '/quizzes'
+    | '/lectures/$lectureId'
+    | '/quizzes/$quizId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/analytics'
+    | '/attendance'
+    | '/lectures'
+    | '/quizzes'
+    | '/lectures/$lectureId'
+    | '/quizzes/$quizId'
+  id:
+    | '__root__'
+    | '/'
+    | '/analytics'
+    | '/attendance'
+    | '/lectures'
+    | '/quizzes'
+    | '/lectures/$lectureId'
+    | '/quizzes/$quizId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AnalyticsRoute: typeof AnalyticsRoute
+  AttendanceRoute: typeof AttendanceRoute
+  LecturesRoute: typeof LecturesRouteWithChildren
+  QuizzesRoute: typeof QuizzesRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/quizzes': {
+      id: '/quizzes'
+      path: '/quizzes'
+      fullPath: '/quizzes'
+      preLoaderRoute: typeof QuizzesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lectures': {
+      id: '/lectures'
+      path: '/lectures'
+      fullPath: '/lectures'
+      preLoaderRoute: typeof LecturesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/attendance': {
+      id: '/attendance'
+      path: '/attendance'
+      fullPath: '/attendance'
+      preLoaderRoute: typeof AttendanceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/analytics': {
+      id: '/analytics'
+      path: '/analytics'
+      fullPath: '/analytics'
+      preLoaderRoute: typeof AnalyticsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +156,52 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/quizzes/$quizId': {
+      id: '/quizzes/$quizId'
+      path: '/$quizId'
+      fullPath: '/quizzes/$quizId'
+      preLoaderRoute: typeof QuizzesQuizIdRouteImport
+      parentRoute: typeof QuizzesRoute
+    }
+    '/lectures/$lectureId': {
+      id: '/lectures/$lectureId'
+      path: '/$lectureId'
+      fullPath: '/lectures/$lectureId'
+      preLoaderRoute: typeof LecturesLectureIdRouteImport
+      parentRoute: typeof LecturesRoute
+    }
   }
 }
 
+interface LecturesRouteChildren {
+  LecturesLectureIdRoute: typeof LecturesLectureIdRoute
+}
+
+const LecturesRouteChildren: LecturesRouteChildren = {
+  LecturesLectureIdRoute: LecturesLectureIdRoute,
+}
+
+const LecturesRouteWithChildren = LecturesRoute._addFileChildren(
+  LecturesRouteChildren,
+)
+
+interface QuizzesRouteChildren {
+  QuizzesQuizIdRoute: typeof QuizzesQuizIdRoute
+}
+
+const QuizzesRouteChildren: QuizzesRouteChildren = {
+  QuizzesQuizIdRoute: QuizzesQuizIdRoute,
+}
+
+const QuizzesRouteWithChildren =
+  QuizzesRoute._addFileChildren(QuizzesRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AnalyticsRoute: AnalyticsRoute,
+  AttendanceRoute: AttendanceRoute,
+  LecturesRoute: LecturesRouteWithChildren,
+  QuizzesRoute: QuizzesRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -33,12 +33,12 @@ function QuizDetail() {
   function submit() {
     if (!studentId) { toast.error("Pick a student first"); return; }
     if (answers.some((a) => a === null)) { toast.error("Answer all questions"); return; }
-    const score = answers.reduce((acc, a, i) => acc + (a === quiz!.questions[i].correctIndex ? 1 : 0), 0);
+    const score = answers.reduce<number>((acc, a, i) => acc + (a === quiz!.questions[i].correctIndex ? 1 : 0), 0);
     const attempt: QuizAttempt = {
       id: uid(),
       quizId: quiz!.id,
       studentId,
-      answers: answers as number[],
+      answers: answers.map((a) => a as number),
       score,
       total: quiz!.questions.length,
       takenAt: new Date().toISOString(),
